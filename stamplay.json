@@ -1,0 +1,10 @@
+{
+  "appId": "<your-stamplay-application-id>",
+  "apiKey": "<your-stamplay-application-key>",
+  "public": "./",
+  "ignore": [
+    "stamplay.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}

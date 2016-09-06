@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Face tracker stats</title>
+		<meta charset="utf-8">
+	</head>
+	<body>
+    <div id="chartContainer" style="height: 600px; width: 100%;"></div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript">
+      var STAMPLAY_APP_ID = '<your-stamplay-application-id>';
+      var STAMPLAY_OBJECT = 'mood';
+
+      var firstTime = true;
+
+      setInterval(loadStats, 4000)
+
+      function loadStats(page) {
+        $.ajax({
+          type: "GET",
+          url: 'https://' + STAMPLAY_APP_ID + '.stamplayapp.com/api/cobject/v1/' + STAMPLAY_OBJECT + '?per_page=200&page=' + page || 1,
+          success: statsLoaded
+        });
+      }
+
+      function statsLoaded(response) {
+        if (response.pagination.page !== response.pagination.total_pages) {
+          return loadStats(response.pagination.total_pages);
+        }
+
+        var dataPoints = [
+          {
+            y: response.data.filter(function (m) { return m.mood === 'happy'; }).length,
+            indexLabel: 'happy'
+          },
+          {
+            y: response.data.filter(function (m) { return m.mood === 'sad'; }).length,
+            indexLabel: 'sad'
+          },
+          {
+            y: response.data.filter(function (m) { return m.mood === 'angry'; }).length,
+            indexLabel: 'angry'
+          },
+          {
+            y: response.data.filter(function (m) { return m.mood === 'surprised'; }).length,
+            indexLabel: 'surprised'
+          },
+        ].filter(function (dp) { return dp.y; });
+
+        renderChart(dataPoints, firstTime);
+        firstTime = false;
+      }
+
+      function renderChart(dataPoints, first) {
+        var chart = new CanvasJS.Chart("chartContainer",
+        {
+          title:{
+            text: "Audience mood"
+          },
+          animationEnabled: first,
+          legend:{
+            verticalAlign: "bottom",
+            horizontalAlign: "center"
+          },
+          data: [
+          {
+            indexLabelFontSize: 20,
+            indexLabelFontFamily: "Monospace",
+            indexLabelFontColor: "darkgrey",
+            indexLabelLineColor: "darkgrey",
+            indexLabelPlacement: "outside",
+            type: "pie",
+            showInLegend: false,
+            toolTipContent: "{y} - <strong>#percent%</strong>",
+            dataPoints: dataPoints
+          }
+          ]
+        });
+        chart.render();
+      }
+    </script>
+	</body>
+</html>

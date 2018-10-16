@@ -51,3 +51,6 @@ Or browse the existing live demo at
 ### Credits
 - clmtrackr by Audun Mathias - https://github.com/auduno/clmtrackr - Facial recognition library
 - CanvasJS - http://canvasjs.com/ - Charts and graphics
+
+## License
+This project is licensed under the MIT license. See the [LICENSE](LICENSE) file for more info.
